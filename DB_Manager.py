@@ -77,6 +77,15 @@ class DB_Manager:
         # When SQL Query is broken
         except OperationalError:
             raise (OperationalError("Cannot Execute SQL Query: %s" % sql))
+            
+    def update_row(self, table_name, col, new_val, where='1=1'):
+        """Updating an existing row"""
+        sql = """UPDATE {}
+                 SET {col} = {nv}
+                 WHERE {w};
+              """.format(table_name, col=col, nv=new_val, w=where)
+        self.conn.cursor().execute(sql)
+        self.conn.commit()
 
 
 if __name__ == '__main__':
