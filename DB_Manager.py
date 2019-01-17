@@ -1,10 +1,12 @@
 import sqlite3
 from sqlite3 import OperationalError, IntegrityError
 import os
+import sys
 
 """
 YouTube: https://youtu.be/GdNA6AFk0Mg
 """
+
 
 class DB_Manager:
 
@@ -29,25 +31,27 @@ class DB_Manager:
         with open(sql_tables_file, 'r') as f:
             try:
                 self.conn.executescript(f.read())
-            except OperationalError:
+            except OperationalError as e:
+                print(e)
                 pass
 
-    def insert_row(self, table_name, **kwargs):
+    def insert_row(self, table_name, insert_or_replace=False, **kwargs):
         """
         Inserts a row into a specified table.
         :param string table_name: name of table in DB
         :param dict **kwargs: dictionary key values of table column names and values
         """
-        sql = """INSERT INTO {tbl} {col} VALUES {val};
+        ior = '' if not insert_or_replace else 'OR REPLACE'
+        sql = """INSERT {ior} INTO {tbl} {col} VALUES {val};
               """.format(tbl=table_name,
                          col=tuple(kwargs.keys()),
-                         val=tuple(kwargs.values())
-                         )
+                         val=tuple(kwargs.values()),
+                         ior=ior)
         try:
             self.conn.cursor().execute(sql)
             self.conn.commit()
         except IntegrityError:
-            print('ERROR: Unique Value already exists in DB.')
+            raise ValueError('ERROR: Unique Value already exists in DB.')
 
     def get_rows(self, table_name, param='1=1', fetch_last=False):
         """
@@ -77,7 +81,7 @@ class DB_Manager:
         # When SQL Query is broken
         except OperationalError:
             raise (OperationalError("Cannot Execute SQL Query: %s" % sql))
-            
+
     def update_row(self, table_name, col, new_val, where='1=1'):
         """Updating an existing row"""
         sql = """UPDATE {}
