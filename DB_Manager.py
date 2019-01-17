@@ -1,11 +1,15 @@
+"""
+YouTube: https://youtu.be/GdNA6AFk0Mg
+
+Terminal display commands:
+.header on
+.mode columns
+WHERE Clause Reference: https://www.tutorialspoint.com/sqlite/sqlite_where_clause.htm
+"""
 import sqlite3
 from sqlite3 import OperationalError, IntegrityError
 import os
 import sys
-
-"""
-YouTube: https://youtu.be/GdNA6AFk0Mg
-"""
 
 
 class DB_Manager:
@@ -105,10 +109,3 @@ if __name__ == '__main__':
         print(mngr.get_rows('contacts', param=['first_name LIKE "hander"', 'contact_id > 3']))
         # print(mngr.get_rows('contacts', 'contact_id > 1', fetch_last=True))
 
-
-"""
-Terminal display commands
-.header on
-.mode columns
-WHERE Clause Reference: https://www.tutorialspoint.com/sqlite/sqlite_where_clause.htm
-"""
